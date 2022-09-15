@@ -1,0 +1,12 @@
+*, *::after, *::before {
+  border: 0;
+  box-sizing: 0;
+  margin: 0;
+  padding: 0;
+}
+
+html { font-size: 62.5%; }
+
+article, figcaption figure,  div, main, section {
+  display: block;
+}
