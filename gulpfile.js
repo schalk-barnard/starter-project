@@ -44,18 +44,40 @@ function scripts() {
     .pipe( browserSync.stream() )
 }
 
+// image optimisation
+const imageMin = require( 'gulp-imagemin' );
+const webP = require( 'gulp-webp' );
+
+function images() {
+  return src( './dist/assets/img/original/**/*' )
+    .pipe( imageMin( [
+      imageMin.gifsicle( { interlaced: true } ),
+      imageMin.mozjpeg( { quality: 75, progressive: true } ),
+      imageMin.optipng( { optimizationLevel: 5 } ),
+      imageMin.svgo( { 
+        plugins: [
+          { removeViewBox: true },
+          { cleanupIDs: false }
+        ]
+       } )
+    ] ) )
+    .pipe( webP() )
+    .pipe( dest( './dist/assets/img' ) ) 
+}
+
 // watch
 function watchTask() {
   watch(
     [
       './src/sass/**/*.scss',
-      './src/js/**/*.js'
+      './src/js/**/*.js',
+      './src/img/**/*'
     ],
-    series( styles, scripts )
+    series( styles, scripts, images )
   )
   watch(
     ['./dist/**/*.html'], browserSync.reload()
   )
 }
 
-exports.default = series( styles, scripts, watchTask )
+exports.default = series( styles, scripts, images, watchTask )
